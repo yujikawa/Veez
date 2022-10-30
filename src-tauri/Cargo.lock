@@ -24,6 +24,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "alisql"
+version = "0.1.10"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "20fdd801f3f64f89a0d7b798121a18de448897857670612f6a475e68458c0f86"
+dependencies = [
+ "minijinja",
+ "regex",
+ "serde",
+ "serde_json",
+ "walkdir",
+]
+
+[[package]]
 name = "alloc-no-stdlib"
 version = "2.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2553,7 +2566,7 @@ dependencies = [
 name = "subrow"
 version = "0.0.0"
 dependencies = [
- "minijinja",
+ "alisql",
  "serde",
  "serde_json",
  "tauri",

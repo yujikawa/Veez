@@ -1,27 +1,38 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
 import { invoke } from "@tauri-apps/api/tauri";
 import "./App.css";
+import { open } from '@tauri-apps/api/dialog';
+
+type SQL = {
+  path: string;
+  query: string;
+  rendered_query: string;
+}
 
 type Table = {
-  name: string;
-  sql_path: string;
-  sql: string;
-  depends_on: Array<Table>
+  table: string;
+  sql: SQL;
+  depends_on: Array<string>
 }
 
 function App() {
 
   const [tables, setTable] = useState<Array<Table>>([]);
   
-  async function getDepends() {
-    invoke<Array<Table>>("get_table_dependencies", {})
-    .then((res)=> {
-      console.log(res);
-      setTable(res);
-    })
-    .catch((e) => console.error(e))
+  function openDialog() {
+    open(
+     {directory: true}
+    ).then(
+      dirPath =>{
+        invoke<Array<Table>>("get_analized_tables", {"rootDir": dirPath})
+        .then((result)=> setTable(result) )
+        .catch((e) => console.error(e))
+      }
+
+    );
   }
+
+
 
   return (
     <div className="container">
@@ -29,13 +40,13 @@ function App() {
 
       <div className="row">
         <div>
-          <button type="button" onClick={() => getDepends()}>
-            Greet
+          <button type="button" onClick={() => openDialog()}>
+            Select SQL folder
           </button>
         </div>
       </div>
       { tables.map((table) => {
-        return <p>{table.name}{table.sql}</p>;
+        return <p>{table.table}<br/>{table.sql.rendered_query}</p>;
       })}
       <p>
 
